@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: atlantis
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2025-03-08T12:41:19Z"
+  generation: 8
+  labels:
+    app: atlantis
+    app.kubernetes.io/managed-by: Helm
+    chart: atlantis-5.16.0
+    helm.sh/chart: atlantis-5.16.0
+    heritage: Helm
+    release: atlantis
+  name: atlantis
+  namespace: default
+  resourceVersion: "138939"
+  uid: 907a1f84-4258-43ee-9d9e-f00bebd39af7
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: atlantis
+      release: atlantis
+  serviceName: atlantis
+  template:
+    metadata:
+      annotations:
+        checksum/config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/repo-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        kubectl.kubernetes.io/restartedAt: "2025-03-14T16:54:28+01:00"
+      creationTimestamp: null
+      labels:
+        app: atlantis
+        release: atlantis
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - server
+        env:
+        - name: PATH
+          value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
+          value: terraform
+        - name: ATLANTIS_DATA_DIR
+          value: /atlantis-data
+        - name: ATLANTIS_REPO_ALLOWLIST
+          value: github.com/preshcode007/*
+        - name: ATLANTIS_PORT
+          value: "4141"
+        - name: ATLANTIS_ATLANTIS_URL
+          value: http://
+        - name: ATLANTIS_GH_USER
+          value: preshcode007
+        - name: ATLANTIS_GH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: github_token
+              name: atlantis-webhook
+        - name: ATLANTIS_GH_WEBHOOK_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: github_secret
+              name: atlantis-webhook
+        - name: ATLANTIS_GH_HOSTNAME
+          value: github.com
+        image: ghcr.io/runatlantis/atlantis:v0.33.0
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 4141
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: atlantis
+        ports:
+        - containerPort: 4141
+          name: atlantis
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 4141
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /atlantis-data
+          name: atlantis-data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 100
+      serviceAccount: atlantis
+      serviceAccountName: atlantis
+      shareProcessNamespace: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: atlantis-data
+        persistentVolumeClaim:
+          claimName: atlantis-data
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+status:
+  availableReplicas: 1
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: atlantis-6c576dc46
+  observedGeneration: 8
+  readyReplicas: 1
+  replicas: 1
+  updateRevision: atlantis-6c576dc46
+  updatedReplicas: 1
