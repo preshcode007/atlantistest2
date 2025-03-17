@@ -72,3 +72,4 @@ module "bastion" {
   role             = "bastion"
   enable_public_ip = true
 }
+# Simulated change for Atlantis
