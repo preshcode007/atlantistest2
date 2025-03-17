@@ -78,3 +78,9 @@ resource "null_resource" "example" {
     command = "echo 'Simulating infrastructure creation with Atlantis'"
   }
 }
+
+resource "null_resource" "example 2" {
+  provisioner "local-exec" {
+    command = "echo 'Simulating infrastructure creation with Atlantis 2nd trial'"
+  }
+}
