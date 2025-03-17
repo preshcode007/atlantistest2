@@ -75,12 +75,11 @@ module "bastion" {
 
 resource "null_resource" "example" {
   provisioner "local-exec" {
-    command = "echo 'Simulating infrastructure creation with Atlantis'"
+    command = "echo 'This is a simulated task by Atlantis!'"
+  }
+
+  triggers = {
+    always_run = "${timestamp()}"
   }
 }
 
-resource "null_resource" "example 2" {
-  provisioner "local-exec" {
-    command = "echo 'Simulating infrastructure creation with Atlantis 2nd trial'"
-  }
-}
