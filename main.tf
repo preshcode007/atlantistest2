@@ -73,13 +73,3 @@ module "bastion" {
   enable_public_ip = true
 }
 
-resource "null_resource" "example" {
-  provisioner "local-exec" {
-    command = "echo 'This is a simulated task by Atlantis!'"
-  }
-
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-}
-
