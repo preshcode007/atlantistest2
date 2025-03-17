@@ -72,3 +72,9 @@ module "bastion" {
   role             = "bastion"
   enable_public_ip = true
 }
+
+resource "null_resource" "example" {
+  provisioner "local-exec" {
+    command = "echo 'Simulating infrastructure creation with Atlantis'"
+  }
+}
